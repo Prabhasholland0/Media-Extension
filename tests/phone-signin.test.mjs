@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {PGlite} from '@electric-sql/pglite';
+test('phone aliases are private, normalized, unambiguous and rate limited',async()=>{
+ const db=new PGlite();
+ await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema public to service_role;`);
+ for(const name of ['001_schema.sql','phone-signin.sql'])await db.exec(await readFile(new URL('../supabase/'+name,import.meta.url),'utf8'));
+ await db.exec(`insert into auth.users values('00000000-0000-0000-0000-000000000001','test@example.com','{}');update public.profiles set phone='98765 43210';set role anon;`);
+ await assert.rejects(()=>db.query(`select public.resolve_phone_signin('+919876543210')`),/permission denied/);
+ await db.exec('reset role;set role authenticated');
+ await assert.rejects(()=>db.query(`select public.resolve_phone_signin('+919876543210')`),/permission denied/);
+ await db.exec('reset role;set role service_role');
+ const resolve=async phone=>(await db.query('select public.resolve_phone_signin($1) r',[phone])).rows[0].r;
+ assert.equal((await resolve('+91 9876543210')).email,'test@example.com');
+ assert.equal((await resolve('09876543210')).email,'test@example.com');
+ for(let i=0;i<6;i++)assert.equal((await resolve('9876543210')).allowed,true);
+ assert.equal((await resolve('9876543210')).allowed,false);
+ assert.equal((await resolve('9999999999')).email,null);
+ await db.exec(`reset role;delete from service_team_private.phone_signin_limits;insert into auth.users values('00000000-0000-0000-0000-000000000002','duplicate@example.com','{}');update public.profiles set phone='+919876543210';set role service_role;`);
+ assert.equal((await resolve('9876543210')).email,null);
+ await db.close();
+});

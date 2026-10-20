@@ -1,0 +1,30 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {PGlite} from '@electric-sql/pglite';
+test('campus submissions and withdrawals are isolated, including older clients',async()=>{
+ const db=new PGlite();
+ await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth,public to authenticated,anon;grant execute on function auth.uid() to authenticated;`);
+ for(const file of ['001_schema.sql','camera-count.sql','campuses.sql'])await db.exec(await readFile(new URL('../supabase/'+file,import.meta.url),'utf8'));
+ const admin='00000000-0000-0000-0000-000000000001',member='00000000-0000-0000-0000-000000000002';
+ await db.query(`insert into auth.users values($1,'admin@example.com','{"full_name":"Admin"}'),($2,'member@example.com','{"full_name":"Member"}')`,[admin,member]);
+ await db.query(`update public.profiles set phone='123',skills=array['producer','ccu'],is_admin=(id=$1)`,[admin]);
+ await db.exec('set role authenticated');
+ const as=id=>db.query(`select set_config('request.jwt.claim.sub',$1,false)`,[id]);
+ for(const id of [admin,member]){await as(id);await db.query(`select public.submit_availability('2026-10-04',array['first'])`);await db.query(`select public.submit_campus_availability('2026-10-04',array['eden_english'],'eden_square')`);}
+ await as(admin);
+ const duties=JSON.stringify({producer:admin,ccu:member});
+ for(const service of ['first','eden_english'])await db.query(`select public.save_schedule('2026-10-04',$1,$2,true,0,0)`,[service,duties]);
+ await as(member);
+ await assert.rejects(()=>db.query(`select public.submit_campus_availability('2026-10-04',array['first'],'eden_square')`),/does not belong/);
+ await db.query(`select public.submit_availability('2026-10-04','{}')`);
+ assert.equal((await db.query(`select status from public.availability where service_id='eden_english'`)).rows[0].status,'available');
+ assert.equal((await db.query(`select status from public.schedules where service_id='eden_english'`)).rows[0].status,'published');
+ await db.query(`select public.submit_campus_availability('2026-10-04','{}','eden_square')`);
+ await as(admin);
+ assert.equal((await db.query(`select status from public.schedules where service_id='eden_english'`)).rows[0].status,'draft');
+ assert.equal((await db.query(`select count(*)::int n from public.assignments where user_id=$1`,[member])).rows[0].n,0);
+ await db.exec('reset role;set role anon');
+ await assert.rejects(()=>db.query(`select public.submit_campus_availability('2026-10-04','{}','eden_square')`),/permission denied/);
+ await db.close();
+});

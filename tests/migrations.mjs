@@ -1,0 +1,2 @@
+// Documented order for an existing NLAG project (002_storage.sql needs Supabase Storage and is skipped in tests).
+export const migrationOrder=['001_schema.sql','camera-count.sql','003_harden_performance.sql','camera-not-needed.sql','campuses.sql','permanent-delete.sql','phone-signin.sql','004_platform.sql','005_phase1_stabilize.sql','006_tenant_core.sql','007_scheduling.sql','008_availability.sql','009_nlag_import.sql'];
