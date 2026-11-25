@@ -39,6 +39,36 @@ h3 { font-weight: 700; letter-spacing: -.015em; line-height: 1.4; }
 .eyebrow { font-size: .625rem; letter-spacing: .14em; font-weight: 700; }
 ::selection { background: #dceaff; color: #0a3574; }
 
+/* Finishing details shared by the member and administrator workspaces. */
+body { text-rendering: optimizeLegibility; }
+button, input, select, textarea { font-optical-sizing: auto; }
+h1, h2, h3 { text-wrap: balance; }
+.person-name, .published-duty-person strong, .profile-identity h1 {
+  overflow-wrap: anywhere;
+}
+.person, .person > div, .published-duty-person, .brand-copy { min-width: 0; }
+.brand-copy strong { text-wrap: balance; }
+.brand-copy small { letter-spacing: .025em; }
+.input, select, textarea { font-size: 1rem; }
+button:disabled { cursor: not-allowed; }
+.btn:disabled { opacity: .55; box-shadow: none; }
+.panel-heading, .dialog-head { border-color: #e7edf5; }
+.empty-state { padding: 32px 20px; color: #637590; line-height: 1.65; }
+.response-member-card, .member-card { border-radius: 16px; border-color: #dfe7f1; }
+.published-duty-person strong { color: #173b6a; }
+.profile-actions { margin-top: 12px; }
+@media (hover: hover) {
+  .btn, .nav button, .service-tabs button, .campus-tabs button {
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+  }
+}
+@media (min-width: 1400px) {
+  .content { max-width: 1500px; margin-inline: auto; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn, .nav button, .service-tabs button, .campus-tabs button { transition: none; }
+}
+
 /* App frame and branding */
 .sidebar {
   background: linear-gradient(165deg, #0c2d60 0%, #081e44 58%, #061735 100%);
