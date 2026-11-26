@@ -1,0 +1,16 @@
+@media(min-width:1101px){
+ .layout{grid-template-columns:240px minmax(0,1fr)}
+ .sidebar{width:240px;padding:26px 20px;gap:16px}
+ .sidebar .brand{gap:10px}.sidebar .brand strong{font-size:17px;line-height:1.35}.sidebar .brand small{font-size:10px}
+ .sidebar .workspace{margin-top:20px;margin-bottom:12px}.sidebar .nav{gap:6px}.sidebar .nav button{padding:12px 14px;min-height:46px;font-size:14px}
+ .sidebar .side-note{padding:14px;font-size:13px;line-height:1.55}.sidebar .account{padding-top:16px;margin-top:18px}
+ .main{min-width:0}.content{width:100%;max-width:1440px;margin:0 auto;padding:24px 32px 32px}
+ .topbar{padding:14px 32px;min-height:64px}.campus-tabs{max-width:640px;margin-bottom:22px}.campus-tabs button{padding:10px 20px}
+ .page-heading{margin-bottom:20px;gap:18px;align-items:center}.page-heading h1{font-size:30px}.page-heading p{font-size:14px;margin-top:5px}.date-control{padding:10px 14px}
+ .content:has(#availability-form){max-width:1180px}.content:has(#availability-form) .narrow{max-width:none;width:100%}
+ #availability-form .panel-heading{padding:20px 24px}#availability-form .service-options{padding:16px 24px;gap:12px}#availability-form .service-choice{min-height:78px;padding:14px 18px}#availability-form .panel-footer{padding:16px 24px}
+ .assignment-layout{grid-template-columns:minmax(0,1fr) 290px;gap:24px}.team-cards{gap:16px}.member-card{padding:18px}
+}
+@media(min-width:1101px) and (max-height:800px){.sidebar .side-note{display:none}.sidebar .workspace{margin-top:12px}.content{padding-top:18px}.campus-tabs{margin-bottom:16px}.page-heading{margin-bottom:16px}}
+.notification-bell{position:relative;padding:8px!important;min-width:40px;min-height:40px}.notification-bell span:not(:empty){position:absolute;top:-4px;right:-4px;background:#1260d8;color:white;border-radius:20px;font-size:10px;padding:2px 5px}.assignment-alert-dialog{padding:20px}.assignment-alert-dialog h2{margin-bottom:12px}.assignment-alert-item{padding:14px 0;border-bottom:1px solid #dce5f3;line-height:1.6;font-size:14px}
+@media(min-width:1101px){#availability-form .availability-options{padding:16px 24px;gap:12px}#availability-form .overall-availability{padding:0 24px 16px}}

@@ -1,0 +1,2 @@
+-- Live migration extend_assignment_alert_roles extends notify_camera_assignment to Producer and CCU.
+-- Existing assignment_notifications ownership policies and uniqueness are preserved.
