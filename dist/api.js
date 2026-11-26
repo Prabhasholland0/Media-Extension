@@ -12,7 +12,7 @@ export async function signInWithIdentifier(identifier,password){
 }
 export async function loadDay(date){
  const [p,a,s]=await Promise.all([
-  db.from('profiles').select('id,full_name,email,phone,avatar_url,skills,active,is_admin').order('full_name'),
+  db.from('profiles').select('id,full_name,email,phone,avatar_url,date_of_birth,skills,active,is_admin').order('full_name'),
   db.from('availability').select('user_id,service_date,service_id,status,submitted_at').eq('service_date',date),
   db.from('schedules').select('id,service_date,service_id,camera_count,not_needed_cameras,status,revision,updated_at,updated_by,assignments(position,user_id)').eq('service_date',date)
  ]);

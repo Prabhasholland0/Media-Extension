@@ -1,4 +1,27 @@
 /* Shared presentation layer. Keep service transitions and data behavior in their existing modules. */
+.member-detail-link { border:0; background:transparent; padding:0; text-align:left; color:inherit; width:100%; cursor:pointer; }
+.profile-upload[hidden], .profile-photo-trigger[hidden] { display:none; }
+#profile-form .input[readonly] { border-color:transparent; background:transparent; box-shadow:none; padding-left:0; cursor:default; }
+.member-actions[hidden], .member-card[hidden] { display:none; }
+.team-search { margin-bottom:20px; }
+.member-details { display:grid; gap:6px; margin:20px 0; overflow-wrap:anywhere; }
+.member-details dd { margin:0 0 10px; }
+.member-details dt { color:#61718a; font-size:.8rem; }
+.member-service-details > div { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #e7edf5; }
+.event-label { display:block; padding:10px 14px; background:#edf4ff; color:#17477c; border-radius:10px; font-weight:600; }
+@media(max-width:600px) {
+ .table-scroll:has(#availability-rows) { overflow:visible; }
+ .table-scroll:has(#availability-rows) table { min-width:0; width:100%; }
+ .table-scroll:has(#availability-rows) thead { display:none; }
+ #availability-rows { display:block; padding:10px; }
+ #availability-rows tr { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border:1px solid #e0e7f2; border-radius:12px; margin-bottom:12px; padding:12px; gap:10px; }
+ #availability-rows td { display:flex; align-items:center; justify-content:space-between; padding:6px; width:auto; min-width:0; border:0; position:static; }
+ #availability-rows td:first-child { grid-column:1/-1; background:transparent; }
+ #availability-rows td[data-service-label]::before { content:attr(data-service-label); font-size:.7rem; color:#61718a; padding-right:6px; }
+ #availability-rows .person { white-space:normal; }
+ .page-heading { flex-wrap:wrap; }
+ .event-label { width:100%; font-size:.8rem; }
+}
 :root {
   --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-heading: 'Manrope', 'DM Sans', system-ui, sans-serif;

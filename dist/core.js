@@ -10,7 +10,7 @@ export function candidates(members,rows,date,service,position) { return members.
 export function validate(assignments,members,rows,date,service,complete=true,cameraCount=8){
   const positions=positionsFor(cameraCount);
   const errors=Object.keys(assignments).filter(p=>!positions.includes(p)).map(p=>`${positionName(p)} is outside the selected camera count.`),used=new Map();
-  for(const p of positions){const id=assignments[p];if(id==='not_needed'){if(!p.startsWith('cam_'))errors.push(positionName(p)+' cannot be marked Standby.');continue;}if(!id){if(complete)errors.push(`${positionName(p)} needs a team member.`);continue;}
+  for(const p of positions){const id=assignments[p];if(id==='not_needed'){if(!p.startsWith('cam_')&&p!=='ccu')errors.push(positionName(p)+' cannot be marked Standby.');continue;}if(!id){if(complete)errors.push(`${positionName(p)} needs a team member.`);continue;}
     if(!candidates(members,rows,date,service,p).some(m=>m.id===id))errors.push(`${positionName(p)}: member is unavailable, inactive, or missing the required skill.`);
     if(used.has(id))errors.push(`${positionName(p)}: member is already assigned to ${positionName(used.get(id))}.`);used.set(id,p);
   } return errors;
