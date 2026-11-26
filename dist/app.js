@@ -139,16 +139,10 @@ function schedulePreview(){
  document.querySelector('#share-preview').onclick=async()=>{
  const button=document.querySelector('#share-preview');button.disabled=true;
  try{
- const canvas=document.createElement('canvas');canvas.width=1080;
- const cards=[...document.querySelectorAll('.schedule-preview .published-duty-card')];
- canvas.height=380+Math.ceil(cards.length/2)*150;const ctx=canvas.getContext('2d');
- ctx.fillStyle='#f3f7ff';ctx.fillRect(0,0,canvas.width,canvas.height);
- const gradient=ctx.createLinearGradient(0,0,1080,300);gradient.addColorStop(0,'#082a69');gradient.addColorStop(1,'#0866e6');ctx.fillStyle=gradient;ctx.fillRect(0,0,1080,300);
- ctx.fillStyle='white';ctx.font='bold 46px sans-serif';ctx.fillText(serviceName()+' Schedule',42,80);
- ctx.font='26px sans-serif';ctx.fillText(campusName()+' · '+displayDate(),42,135);
- if(decemberEvents[state.date])ctx.fillText(decemberEvents[state.date],42,185);
- ctx.font='bold 23px sans-serif';ctx.fillText(document.querySelector('.schedule-preview .published-service-status').textContent.trim(),42,245);
- cards.forEach((card,i)=>{const x=36+(i%2)*522,y=330+Math.floor(i/2)*150;ctx.fillStyle='#e6efff';ctx.beginPath();ctx.roundRect(x,y,486,126,20);ctx.fill();ctx.fillStyle='#456189';ctx.font='23px sans-serif';ctx.fillText(card.querySelector('.published-duty-role').textContent,x+24,y+38);ctx.fillStyle='#092e68';const name=card.querySelector('strong').textContent;let size=30;do{ctx.font='bold '+size+'px sans-serif';size--;}while(ctx.measureText(name).width>438&&size>16);ctx.fillText(name,x+24,y+83);});
+ await document.fonts.ready;
+ const {toCanvas}=await import('./vendor/html-to-image.js');
+ const preview=document.querySelector('.schedule-preview');
+ const canvas=await toCanvas(preview,{pixelRatio:2,backgroundColor:'#f3f7ff',width:preview.offsetWidth,height:preview.scrollHeight,style:{margin:'0'},preferredFontFormat:'woff2'});
  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.94));if(!blob)throw Error('Image failed');
  const file=new File([blob],`schedule-${state.date}.jpg`,{type:'image/jpeg'});
  if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Service schedule'});}else{const url=URL.createObjectURL(file),link=document.createElement('a');link.href=url;link.download=file.name;link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
